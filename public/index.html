@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Incredible Trails: Trip Planner</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Leaflet (map) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+</head>
+<body>
+  <div class="bg-overlay"></div>
+  <header>
+    <h1>Incredible Trails</h1>
+    <p>Your Smart Trip Planner</p>
+  </header>
+
+  <main>
+    <section class="planner">
+      <h2>Plan Your Trip</h2>
+      <input type="text" id="destination" placeholder="Enter destination (e.g., Manali)" />
+      <input type="number" id="budget" placeholder="Enter budget (₹)" />
+      <button onclick="generatePlan()">Generate Plan</button>
+    </section>
+
+    <section id="result" class="hidden">
+      <h2>Your Trip Plan</h2>
+      <p><strong>Destination:</strong> <span id="dest-output"></span></p>
+      <p><strong>Budget:</strong> <span id="budget-output"></span></p>
+      <p><strong>Weather:</strong> <span id="weather-output"></span></p>
+
+      <ul id="places-list"></ul>
+
+      <div id="map" aria-label="Destination map"></div>
+    </section>
+  </main>
+
+  <footer>
+    <small>© <span id="year"></span> Incredible Trails</small>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script src="script.js"></script>
+</body>
+</html>
