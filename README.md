@@ -1,19 +1,22 @@
-# Incredible Trails — How to run
+# Incredible Trails: Smart Trip Planner 🌍✈️
 
-## Prerequisites
-- Node.js LTS
+Incredible Trails is a smart trip planning web application where users can:
+- Enter a destination and budget 💰
+- See weather updates 🌤️
+- Explore day-by-day itineraries 📅
+- View maps 🗺️
+- Get popular places suggestions 🏞️
+- Save past plans using SQLite 💾
 
-## Setup
-```bash
-npm install
-```
-Create a file named `.env` with:
-```
-OPENWEATHER_KEY=YOUR_OPENWEATHER_API_KEY
-```
+---
 
-## Start
-```bash
-npm run dev
-# then open http://localhost:3000
-```
+## 🚀 Features
+- Real-time weather using OpenWeather API
+- Google Maps integration
+- Popular places suggestions
+- SQLite database for storing past trip plans
+- Simple and beginner-friendly Node.js + Express backend
+
+---
+
+## 📂 Project Structure

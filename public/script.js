@@ -34,8 +34,8 @@ async function generatePlan() {
   // Build suggestions (basic for beginners)
   const base = [
     'Visit popular attractions',
-    'Explore local food spots',
     'Discover nature trails',
+    'Explore local food spots',
     'Relax at local cafes',
     'Take a guided city tour'
   ];
@@ -46,12 +46,32 @@ async function generatePlan() {
       : 'Consider premium tours and unique experiences';
 
   const placesList = document.getElementById('places-list');
-  placesList.innerHTML = '';
-  [...base, `Budget tip: ${budgetTip}`].forEach((item) => {
-    const li = document.createElement('li');
+placesList.innerHTML = '';
+
+const links = {
+  'Visit popular attractions': 'popular.html',
+  'Discover nature trails': 'nature.html',
+  'Explore local food spots': 'food.html',
+  'Relax at local cafes': 'cafes.html',
+  'Take a guided city tour': 'citytour.html'
+};
+
+[...base, `Budget tip: ${budgetTip}`].forEach((item) => {
+  const li = document.createElement('li');
+
+  if (links[item]) {
+    const a = document.createElement('a');
+    a.href = links[item];
+    a.textContent = item;
+    a.target = '_blank'; // optional: opens in new tab
+    li.appendChild(a);
+  } else {
     li.textContent = item;
-    placesList.appendChild(li);
-  });
+  }
+
+  placesList.appendChild(li);
+});
+
 
   try {
     // 1) Geocode destination

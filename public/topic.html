@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Topic — Incredible Trails</title>
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    main { width: min(92%, 720px); margin: 2rem auto; padding: 2rem; border-radius: 12px; }
+    .back { display:inline-block; margin-bottom:1rem; text-decoration:none; color:var(--brand-dark); font-weight:600; }
+    .topic-items { text-align:left; margin-top:1rem; padding-left:1.2rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Incredible Trails</h1>
+    <p>Your Smart Trip Planner</p>
+  </header>
+
+  <main>
+    <a class="back" href="/" aria-label="Back to planner">← Back to Planner</a>
+    <h2 id="topic-title">Loading…</h2>
+    <p id="topic-summary"></p>
+
+    <div id="for-dest" style="font-style:italic; margin-bottom:0.5rem;"></div>
+
+    <ul id="topic-items" class="topic-items"></ul>
+
+    <h4>Tips</h4>
+    <ul id="topic-tips" class="topic-items"></ul>
+  </main>
+
+  <footer>
+    <small>© <span id="year"></span> Incredible Trails</small>
+  </footer>
+
+  <script>
+    // small helper to read query params
+    function getParam(name) {
+      const params = new URLSearchParams(location.search);
+      return params.get(name);
+    }
+
+    function setYear() {
+      const y = document.getElementById('year');
+      if (y) y.textContent = new Date().getFullYear();
+    }
+
+    async function loadTopic() {
+      const topicKey = getParam('topic');
+      const dest = getParam('dest');
+
+      setYear();
+
+      if (!topicKey) {
+        document.getElementById('topic-title').innerText = 'Topic not specified';
+        return;
+      }
+
+      try {
+        const res = await fetch('/data/topics.json');
+        const topics = await res.json();
+        const topic = topics[topicKey];
+
+        if (!topic) {
+          document.getElementById('topic-title').innerText = 'Topic not found';
+          return;
+        }
+
+        document.getElementById('topic-title').innerText = topic.title;
+        document.getElementById('topic-summary').innerText = topic.summary || '';
+
+        if (dest) {
+          document.getElementById('for-dest').innerText = `Suggestions tailored for: ${decodeURIComponent(dest)}`;
+        }
+
+        const itemsEl = document.getElementById('topic-items');
+        itemsEl.innerHTML = '';
+        (topic.items || []).forEach(it => {
+          const li = document.createElement('li');
+          li.textContent = it;
+          itemsEl.appendChild(li);
+        });
+
+        const tipsEl = document.getElementById('topic-tips');
+        tipsEl.innerHTML = '';
+        (topic.tips || []).forEach(t => {
+          const li = document.createElement('li');
+          li.textContent = t;
+          tipsEl.appendChild(li);
+        });
+
+      } catch (err) {
+        document.getElementById('topic-title').innerText = 'Failed to load topic';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadTopic);
+  </script>
+</body>
+</html>

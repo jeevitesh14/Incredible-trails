@@ -1,19 +1,27 @@
 // database.js
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("./trips.db");
+require("dotenv").config();
+const mongoose = require("mongoose");
 
-// Create table if not exists
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS plans (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      destination TEXT,
-      budget INTEGER,
-      weather TEXT,
-      itinerary TEXT,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Connected to MongoDB successfully!"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+// Define a schema for your "plans" collection
+const planSchema = new mongoose.Schema({
+  destination: { type: String, required: true },
+  budget: Number,
+  weather: String,
+  itinerary: String,
+  created_at: { type: Date, default: Date.now },
 });
 
-module.exports = db;
+// Create a model (like a table)
+const Plan = mongoose.model("Plan", planSchema);
+
+// Export it so you can use it in other files
+module.exports = Plan;

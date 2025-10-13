@@ -3,6 +3,8 @@ const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+require('./database');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -78,6 +80,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, () => {  
   console.log(`Incredible Trails running at http://localhost:${PORT}`);
 });

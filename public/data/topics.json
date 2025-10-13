@@ -1,0 +1,70 @@
+{
+  "popular-attractions": {
+    "title": "Popular Attractions",
+    "summary": "Must-see sights and famous landmarks to make the most of your trip.",
+    "items": [
+      "Main viewpoint / scenic spot",
+      "Historic temple or monument",
+      "Local market for souvenirs",
+      "Sunset vantage point"
+    ],
+    "tips": [
+      "Start early to avoid crowds.",
+      "Buy tickets online when available."
+    ]
+  },
+  "nature-trails": {
+    "title": "Nature Trails",
+    "summary": "Short hikes and gentle trails for different fitness levels.",
+    "items": [
+      "Easy 2 km riverside walk",
+      "Moderate hill trail with viewpoints",
+      "Guided bird-watching walk",
+      "Waterfall short trek"
+    ],
+    "tips": [
+      "Carry water and wear good walking shoes.",
+      "Check local weather before heading out."
+    ]
+  },
+  "local-food-spots": {
+    "title": "Local Food Spots",
+    "summary": "Where to try the best local dishes, street food, and desserts.",
+    "items": [
+      "Family-run thali place",
+      "Street food lane for snacks",
+      "Popular sweet shop",
+      "Riverside cafe for local tea"
+    ],
+    "tips": [
+      "Try small portions first if you have a sensitive stomach.",
+      "Ask locals for their favourite dish."
+    ]
+  },
+  "local-cafes": {
+    "title": "Local Cafes",
+    "summary": "Relaxing cafés to chill, work, or sip local brews.",
+    "items": [
+      "Rooftop café with mountain views",
+      "Cozy book cafe",
+      "Cafe with live music evenings"
+    ],
+    "tips": [
+      "Check opening hours; some cafes open late only on weekends.",
+      "Reserve a table for evenings when it's busy."
+    ]
+  },
+  "city-tour": {
+    "title": "City Tour Guide",
+    "summary": "Suggested city tour routes and a one-day plan.",
+    "items": [
+      "Morning: Central market + monument",
+      "Afternoon: Museum and cafe lunch",
+      "Evening: Riverside walk + local snacks"
+    ],
+    "tips": [
+      "Use a local guide to learn history and hidden stories.",
+      "Buy a day-pass for local transport if available."
+    ]
+  }
+}

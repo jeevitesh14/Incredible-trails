@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Popular Attractions</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* small page-specific overrides (optional) */
+    .info-section { padding: 2rem 1rem; height: auto; min-height: 60vh; }
+    .controls { margin-bottom: 20px; display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap; }
+    .controls input[type="text"] { padding:10px; border-radius:8px; border:1px solid #ccc; width:240px; }
+    .controls button { padding:10px 14px; border-radius:8px; background:#00796b; color:#fff; border:none; cursor:pointer; }
+    #attractions-list { margin-top: 12px; list-style:none; padding:0; max-width:760px; margin-left:auto; margin-right:auto; }
+    #attractions-list li { background:#fff; margin:8px 0; padding:12px 14px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; gap:12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); }
+    #attractions-list .place-meta { display:flex; flex-direction:column; gap:4px; }
+    #attractions-list .place-links a { text-decoration:none; margin-left:8px; font-weight:600; color:#00796b; }
+    #loading { text-align:center; color:#555; padding:10px 0; }
+    #no-results { text-align:center; color:#666; padding:10px 0; }
+  </style>
+</head>
+<body class="popular-page">
+  <section class="info-section">
+    <div class="info-box" id="main-box">
+      <h1>Popular Attractions</h1>
+      <p>Find nearby popular places for your destination.</p>
+
+      <div class="controls" role="region" aria-label="Search controls">
+        <input id="city-input" type="text" placeholder="Enter city (or leave blank to use last search)" />
+        <button id="search-btn">Search</button>
+        <button id="use-last-btn" title="Use the destination you last searched">Use last destination</button>
+      </div>
+
+      <div id="status-area" aria-live="polite"></div>
+
+      <ul id="attractions-list" aria-label="Nearby attractions"></ul>
+
+      <div style="text-align:center; margin-top:18px;">
+        <a href="index.html" class="back-link">← Back to Trip Planner</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // --- Helper utilities ---
+    function setStatus(html) {
+      document.getElementById('status-area').innerHTML = html || '';
+    }
+
+    function inr(n) { return n; } // placeholder if you want to show currency later
+
+    // --- Overpass query builder ---
+    function buildOverpassQuery(lat, lon, radiusMeters = 10000, limit = 30) {
+      // We search for nodes/ways/relations with tourism/historic tags commonly used for attractions.
+      // The `out center` ensures ways/relations include center coords.
+      return `
+        [out:json][timeout:25];
+        (
+          node(around:${radiusMeters},${lat},${lon})["tourism"];
+          way(around:${radiusMeters},${lat},${lon})["tourism"];
+          relation(around:${radiusMeters},${lat},${lon})["tourism"];
+          node(around:${radiusMeters},${lat},${lon})["historic"];
+          way(around:${radiusMeters},${lat},${lon})["historic"];
+          relation(around:${radiusMeters},${lat},${lon})["historic"];
+        );
+        out center ${limit};
+      `;
+    }
+
+    // Convert Overpass element to name & coordinates
+    function elementToPlace(el) {
+      const name = el.tags && (el.tags.name || el.tags['official_name'] || el.tags['name:en']);
+      let lat = el.lat, lon = el.lon;
+      if (!lat && el.center) { lat = el.center.lat; lon = el.center.lon; }
+      if (!name) return null;
+      return { name, lat, lon, tags: el.tags || {} };
+    }
+
+    // Render places to list
+    function renderPlaces(places, city) {
+      const ul = document.getElementById('attractions-list');
+      ul.innerHTML = '';
+      if (!places.length) {
+        document.getElementById('status-area').innerHTML = '<div id="no-results">No attractions found nearby.</div>';
+        return;
+      }
+      document.getElementById('status-area').innerHTML = '';
+      places.forEach(p => {
+        const li = document.createElement('li');
+        const meta = document.createElement('div');
+        meta.className = 'place-meta';
+        const title = document.createElement('strong');
+        title.textContent = p.name;
+        const type = document.createElement('small');
+        type.textContent = p.tags.tourism ? `type: ${p.tags.tourism}` : (p.tags.historic ? `historic: ${p.tags.historic}` : '');
+        const coords = document.createElement('small');
+        coords.textContent = (p.lat && p.lon) ? `Coordinates: ${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}` : '';
+        meta.appendChild(title);
+        if (type.textContent) meta.appendChild(type);
+        if (coords.textContent) meta.appendChild(coords);
+
+        const links = document.createElement('div');
+        links.className = 'place-links';
+        // Google Maps Search
+        const g = document.createElement('a');
+        g.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + (city ? ' ' + city : ''))}`;
+        g.target = '_blank';
+        g.rel = 'noopener';
+        g.textContent = 'Google';
+        // OpenStreetMap direct map link if coords available
+        const o = document.createElement('a');
+        if (p.lat && p.lon) {
+          o.href = `https://www.openstreetmap.org/?mlat=${p.lat}&mlon=${p.lon}#map=18/${p.lat}/${p.lon}`;
+        } else {
+          o.href = `https://www.openstreetmap.org/search?query=${encodeURIComponent(p.name + (city ? ' ' + city : ''))}`;
+        }
+        o.target = '_blank';
+        o.rel = 'noopener';
+        o.textContent = 'OSM';
+        links.appendChild(g);
+        links.appendChild(o);
+
+        li.appendChild(meta);
+        li.appendChild(links);
+        ul.appendChild(li);
+      });
+    }
+
+    // fetch attractions from Overpass
+    async function fetchAttractionsOverpass(lat, lon, radius = 10000) {
+      const url = 'https://overpass-api.de/api/interpreter';
+      const query = buildOverpassQuery(lat, lon, radius, 50);
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body: `data=${encodeURIComponent(query)}`
+      });
+      if (!res.ok) throw new Error('Overpass API error: ' + res.status);
+      const data = await res.json();
+      const places = (data.elements || []).map(elementToPlace).filter(Boolean);
+      // Deduplicate by name
+      const map = new Map();
+      places.forEach(p => {
+        if (!map.has(p.name)) map.set(p.name, p);
+      });
+      return Array.from(map.values()).slice(0, 30);
+    }
+
+    // Get last saved destination from localStorage (your script.js uses key 'incredible_trails:last')
+    function getLastSaved() {
+      try {
+        const raw = localStorage.getItem('incredible_trails:last');
+        if (!raw) return null;
+        const obj = JSON.parse(raw);
+        // expect { destination, budget, lat, lon }
+        if (obj.lat && obj.lon) return obj;
+        return null;
+      } catch (e) { return null; }
+    }
+
+    // Geocode via your backend route /api/geocode (same pattern as your script.js)
+    async function geocodeCity(city) {
+      const q = encodeURIComponent(city);
+      const res = await fetch(`/api/geocode?q=${q}`);
+      if (!res.ok) throw new Error('Geocode failed');
+      return res.json(); // expected { lat, lon, name }
+    }
+
+    // Main search flow
+    async function performSearch(useLast=false) {
+      setStatus('<div id="loading">Searching attractions…</div>');
+      document.getElementById('attractions-list').innerHTML = '';
+      try {
+        let lat, lon, cityName;
+        if (useLast) {
+          const last = getLastSaved();
+          if (!last) {
+            setStatus('<div id="no-results">No last search found. Please enter a city.</div>');
+            return;
+          }
+          lat = last.lat; lon = last.lon; cityName = last.destination || '';
+        } else {
+          const city = document.getElementById('city-input').value.trim();
+          if (!city) {
+            setStatus('<div id="no-results">Please enter a city or click "Use last destination".</div>');
+            return;
+          }
+          setStatus('<div id="loading">Geocoding city…</div>');
+          const geo = await geocodeCity(city);
+          lat = geo.lat; lon = geo.lon; cityName = geo.name || city;
+          // store for convenience (optional)
+          try {
+            localStorage.setItem('incredible_trails:last', JSON.stringify({ destination: cityName, budget: 0, lat, lon }));
+          } catch (e) {}
+        }
+
+        setStatus('<div id="loading">Fetching nearby attractions...</div>');
+        const places = await fetchAttractionsOverpass(lat, lon, 12000); // 12 km radius
+        renderPlaces(places, cityName);
+        if (!places.length) setStatus('<div id="no-results">No attractions found nearby.</div>');
+      } catch (err) {
+        console.error(err);
+        setStatus(`<div id="no-results">Failed to fetch attractions: ${err.message}</div>`);
+      }
+    }
+
+    // --- Wire up UI ---
+    document.getElementById('search-btn').addEventListener('click', () => performSearch(false));
+    document.getElementById('use-last-btn').addEventListener('click', () => performSearch(true));
+    // If there is a last saved destination, auto-run to show results on page load
+    (async function initAuto() {
+      const last = getLastSaved();
+      if (last) {
+        document.getElementById('city-input').value = last.destination || '';
+        // Optionally auto-run
+        performSearch(true);
+      }
+    })();
+  </script>
+</body>
+</html>
