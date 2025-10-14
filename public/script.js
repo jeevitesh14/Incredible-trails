@@ -135,3 +135,40 @@ window.addEventListener('DOMContentLoaded', () => {
     if (budget) document.getElementById('budget').value = budget;
   } catch {}
 });
+// 🌙 Theme Toggle Feature
+const themeSwitch = document.getElementById('theme-switch');
+const modeLabel = document.getElementById('mode-label');
+
+// Check saved theme preference
+window.addEventListener('DOMContentLoaded', () => {
+  setYear();
+  const saved = localStorage.getItem('incredible_trails:last');
+  if (saved) {
+    try {
+      const { destination, budget } = JSON.parse(saved);
+      if (destination) document.getElementById('destination').value = destination;
+      if (budget) document.getElementById('budget').value = budget;
+    } catch {}
+  }
+
+  // Apply saved theme
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeSwitch.checked = true;
+    modeLabel.textContent = '🌙 Dark Mode';
+  }
+});
+
+// Toggle dark/light mode
+themeSwitch.addEventListener('change', () => {
+  if (themeSwitch.checked) {
+    document.body.classList.add('dark-mode');
+    localStorage.setItem('theme', 'dark');
+    modeLabel.textContent = '🌙 Dark Mode';
+  } else {
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('theme', 'light');
+    modeLabel.textContent = '🌞 Light Mode';
+  }
+});
