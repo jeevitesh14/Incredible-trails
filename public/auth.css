@@ -1,0 +1,103 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop') no-repeat center/cover fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  color: #333;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 0;
+}
+
+.auth-container {
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 40px 50px;
+  border-radius: 16px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  backdrop-filter: blur(8px);
+}
+
+.auth-container h1 {
+  margin-bottom: 25px;
+  color: #004d40;
+}
+
+.auth-container input {
+  width: 90%;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1rem;
+}
+
+.auth-container button {
+  width: 95%;
+  margin-top: 15px;
+  padding: 12px;
+  background-color: #080079;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.auth-container button:hover {
+  background-color: #004d40;
+}
+
+.auth-container p {
+  margin-top: 15px;
+}
+
+.auth-container a {
+  color: #00796b;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* 🌙 DARK MODE for auth pages */
+body.dark-mode {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+body.dark-mode::before {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode .auth-container {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+}
+
+body.dark-mode input {
+  background-color: #2a2a2a;
+  border: 1px solid #555;
+  color: #fff;
+}
+
+body.dark-mode button {
+  background-color: #007bff;
+}
+
+body.dark-mode a {
+  color: #66b2ff;
+}

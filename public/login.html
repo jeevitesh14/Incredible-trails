@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Incredible Trails</title>
+  <link rel="stylesheet" href="auth.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Same theme toggle as main page */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #333;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: #007bff; }
+    input:checked + .slider:before { transform: translateX(24px); }
+  </style>
+
+  <script>
+    // Redirect if already logged in
+    if (localStorage.getItem('token')) {
+      window.location.href = 'index.html';
+    }
+  </script>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Welcome Back</h1>
+
+    <div class="theme-toggle">
+      <label class="switch">
+        <input type="checkbox" id="theme-switch" />
+        <span class="slider round"></span>
+      </label>
+      <span id="mode-label">🌞 Light Mode</span>
+    </div>
+
+    <input id="email" type="email" placeholder="Email" required>
+    <input id="password" type="password" placeholder="Password" required>
+    <button id="loginBtn">Login</button>
+    <p>Don’t have an account? <a href="register.html">Register</a></p>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Theme restore
+      const savedTheme = localStorage.getItem('theme');
+      const themeSwitch = document.getElementById('theme-switch');
+      const modeLabel = document.getElementById('mode-label');
+
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeSwitch.checked = true;
+        modeLabel.textContent = '🌙 Dark Mode';
+      }
+
+      themeSwitch.addEventListener('change', () => {
+        if (themeSwitch.checked) {
+          document.body.classList.add('dark-mode');
+          localStorage.setItem('theme', 'dark');
+          modeLabel.textContent = '🌙 Dark Mode';
+        } else {
+          document.body.classList.remove('dark-mode');
+          localStorage.setItem('theme', 'light');
+          modeLabel.textContent = '🌞 Light Mode';
+        }
+      });
+
+      // Login function
+      document.getElementById('loginBtn').addEventListener('click', async () => {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        if (!email || !password) return alert('Please enter both email and password.');
+
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('token', data.token);
+          window.location.href = 'index.html';
+        } else {
+          alert(data.error || 'Login failed');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

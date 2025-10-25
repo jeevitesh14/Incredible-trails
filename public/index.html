@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Incredible Trails: Trip Planner</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Leaflet (map) -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -14,13 +13,20 @@
   />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+  </script>
 </head>
 <body>
   <div class="bg-overlay"></div>
   <header>
-    <h1>Incredible Trails</h1>
-    <p>Your Smart Trip Planner</p>
-  <!-- 🌙 Dark Mode Toggle -->
+  <h1>Incredible Trails</h1>
+  <p>Your Smart Trip Planner</p>
+
+  <!-- 🌗 Theme Toggle -->
   <div class="theme-toggle">
     <label class="switch">
       <input type="checkbox" id="theme-switch" />
@@ -28,7 +34,44 @@
     </label>
     <span id="mode-label">🌞 Light Mode</span>
   </div>
-  </header>
+
+  <button id="logoutBtn" class="btn-logout">Logout</button>
+</header>
+
+<style>
+  /* Logout button styling */
+  .btn-logout {
+    float: right;
+    margin: 10px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #e53935;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .btn-logout:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+  }
+
+  /* Dark mode support for logout button */
+  body.dark-mode .btn-logout {
+    background-color: #ff5252;
+    color: #fff;
+  }
+
+  body.dark-mode .btn-logout:hover {
+    background-color: #ff1744;
+  }
+</style>
+
 
   <main>
     <section class="planner">
@@ -43,10 +86,7 @@
       <p><strong>Destination:</strong> <span id="dest-output"></span></p>
       <p><strong>Budget:</strong> <span id="budget-output"></span></p>
       <p><strong>Weather:</strong> <span id="weather-output"></span></p>
-      
-
       <ul id="places-list"></ul>
-
       <div id="map" aria-label="Destination map"></div>
     </section>
   </main>
@@ -55,12 +95,40 @@
     <small>© <span id="year"></span> Incredible Trails</small>
   </footer>
 
-  <!-- Leaflet JS -->
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
   <script src="script.js"></script>
+
+  <script>
+    // Restore saved theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('theme-switch').checked = true;
+      document.getElementById('mode-label').textContent = '🌙 Dark Mode';
+    }
+
+    // Toggle theme
+    document.getElementById('theme-switch').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('mode-label').textContent = '🌙 Dark Mode';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-mode');
+        document.getElementById('mode-label').textContent = '🌞 Light Mode';
+        localStorage.setItem('theme', 'light');
+      }
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    });
+  </script>
 </body>
 </html>
