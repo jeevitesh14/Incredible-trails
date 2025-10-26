@@ -311,3 +311,108 @@ body.dark-mode footer {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* =========================================================
+   INFO PAGES STYLE (Cafes, Food, Nature, City Tour, Popular)
+   ========================================================= */
+
+.info-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  position: relative;
+  z-index: 2;
+}
+
+.info-box {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  padding: 35px 40px;
+  text-align: center;
+  width: 90%;
+  max-width: 550px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.info-box h1 {
+  margin-bottom: 10px;
+  color: #004d40;
+}
+
+.info-box p {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.05rem;
+}
+
+.back-link {
+  display: inline-block;
+  padding: 10px 18px;
+  background: #080079;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.back-link:hover {
+  background: #004d40;
+  transform: translateY(-2px);
+}
+/* Dark Mode for Cards */
+body.dark-mode .popular-container {
+  background: rgba(20,20,20,0.85);
+  color: #e0e0e0;
+}
+
+body.dark-mode .popular-item {
+  background: #222;
+  color: #ddd;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.7);
+}
+
+/* Page-specific background images */
+.cafes-page {
+  background: url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1600") no-repeat center/cover fixed;
+}
+
+.citytour-page {
+  background: url("https://images.unsplash.com/photo-1508057198894-247b23fe5ade?q=80&w=1600") no-repeat center/cover fixed;
+}
+
+.food-page {
+  background: url("https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=1600") no-repeat center/cover fixed;
+}
+
+/* Nature Trails Page Background */
+.nature-page {
+  background: url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80") 
+  center/cover no-repeat fixed;
+}
+
+
+.popular-page {
+  background: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop") no-repeat center/cover fixed;
+}
+
+
+/* Dark Mode Support */
+body.dark-mode .info-box {
+  background: rgba(30, 30, 30, 0.92);
+  color: #e0e0e0;
+}
+
+body.dark-mode .info-box p {
+  color: #e0e0e0;
+}
+
+body.dark-mode .back-link {
+  background: #1e88e5;
+}
+
+body.dark-mode .back-link:hover {
+  background: #1565c0;
+}

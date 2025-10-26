@@ -6,7 +6,7 @@ Incredible Trails is a smart trip planning web application where users can:
 - Explore day-by-day itineraries 📅
 - View maps 🗺️
 - Get popular places suggestions 🏞️
-- Save past plans using SQLite 💾
+- Save past plans using MongoDB 💾
 
 ---
 
@@ -14,7 +14,7 @@ Incredible Trails is a smart trip planning web application where users can:
 - Real-time weather using OpenWeather API
 - Google Maps integration
 - Popular places suggestions
-- SQLite database for storing past trip plans
+- MongoDB database for storing past trip plans
 - Simple and beginner-friendly Node.js + Express backend
 
 ---

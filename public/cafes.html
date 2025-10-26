@@ -6,14 +6,23 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="cafes-page">
+
+
+
   <section class="info-section">
     <div class="info-box">
       <h1>Local Cafes</h1>
-      <p>You must visit some local cafes for an authentic experience.</p>
+      <p>Relax in cozy cafes and enjoy authentic local flavors.</p>
       <a href="index.html" class="back-link">← Back to Trip Planner</a>
     </div>
   </section>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      toggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
+  </script>
 </body>
-
-
 </html>

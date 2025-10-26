@@ -25,6 +25,3 @@ const Plan = mongoose.model("Plan", planSchema);
 
 // Export it so you can use it in other files
 module.exports = Plan;
-
-
-
